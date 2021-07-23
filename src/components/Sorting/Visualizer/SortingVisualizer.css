@@ -1,0 +1,89 @@
+#header {
+  height: 7vh;
+  padding: 1.5vh 0 1.5vh 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#header {
+  background-color: #282828;
+}
+
+#headerLeft, #headerRight {
+  display: flex;
+  flex-direction: row;
+  margin: 0 2vw 0 2vw;
+}
+
+#header * {
+  border: none;
+  border-radius: 10px;
+  width: 20vw;
+  height: 5vh;
+  color: #1d2021;
+}
+
+#header * * {
+  box-shadow: 5px 5px 10px #1d2021;
+  cursor: pointer;
+}
+
+#newArr {
+  background-color: #fabd2f;
+}
+
+#sortButton {
+  background-color: #fe8019;
+}
+
+#headerLeft input[type="text"] {
+  font-size: 15px;
+  height: 5vh;
+  width: 45px;
+  padding-left: 10px;
+  background-color: #504945;
+  color: #ebdbb2;
+  margin-right: 3vw;
+}
+
+#selectSize {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 150px;
+}
+
+#selectSize select {
+  appearance: none;
+  padding-left: 10px;
+  background-color: #fabd2f;
+  color: #1d2021;
+  width: 150px;
+}
+
+#selectSize::after {
+  content: "\25b6";
+  position: relative;
+  right: 15%;
+  transform: rotate(90deg);
+}
+
+#sortButton {
+  margin-left: 3vw;
+}
+
+#arrayView {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  height: 80vh;
+  background-color: #928374;
+}
+
+.bar {
+  margin: 0 1px 1px 0;
+  box-shadow: 2px 0 2px black;
+}

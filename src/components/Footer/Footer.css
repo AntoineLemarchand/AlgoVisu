@@ -1,0 +1,26 @@
+#footer {
+  background-color: #282828;
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+#footer * {
+  text-decoration: none;
+  color: #1d2021;
+  padding: 2vh 3vw 2vh 3vw;
+  border-radius: 15px;
+  box-shadow: 2px 2px 7px #1d2021;
+}
+
+#home {
+  background-color: #b8bb26;
+}
+
+#portfolio {
+  background-color: #b8bb26;
+}
+
+
