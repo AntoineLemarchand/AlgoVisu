@@ -35,7 +35,11 @@ export default class SortingVisualizer extends Component {
       setTimeout(this.makeNewArray, 200);
    }
 
-   sortAnimation = (animations: any[]) => {
+   animStates = (states: {}) => {
+      this.setState(states)
+   }
+
+   sortAnimation = (animations: any[], callback: Function) => {
       for (let i = 0; i < animations.length; i++) {
          const arrayBars = document.getElementsByClassName('bar');
          const isColorChange = i % 3 !== 2;
@@ -53,14 +57,16 @@ export default class SortingVisualizer extends Component {
                const [barOneIndex, newHeight] = animations[i];
                const barOneStyle = arrayBars[barOneIndex] as HTMLElement;
                barOneStyle.style.height = `${newHeight}vh`;
+               if (i===animations.length-1) {
+                  callback();
+               }
             }, i * ANIMATION_SPEED)
          }
       }
-      
    }
 
    makeNewArray = () => {
-      this.setState({mainArray: [] as number[]})
+      this.setState({mainArray: [] as number[], steps: 0, showStats: false})
       var array:number[] = [];
       for (let i = 0 ;i<this.state.arraySize; i++) {
          let randomInt:number = Math.floor(Math.random() * 75)+5;
@@ -79,22 +85,20 @@ export default class SortingVisualizer extends Component {
       switch(method) {
          case "mergeSort":
             const mergeAnim = getMergeSortAnimations(this.state.mainArray);
-            this.sortAnimation(mergeAnim);
+            this.sortAnimation(mergeAnim, ()=>{this.setState({steps: mergeAnim.length, showStats: true})});
             break;
          case "quickSort":
             const quickAnim = getQuickSortAnimations(this.state.mainArray);
-            this.sortAnimation(quickAnim);
+            this.sortAnimation(quickAnim, ()=>{this.setState({steps: quickAnim.length, showStats: true})});
             break;
          case "heapSort":
             const heapAnim = getHeapSortAnimations(this.state.mainArray);
-            this.sortAnimation(heapAnim);
+            this.sortAnimation(heapAnim, ()=>{this.setState({steps: heapAnim.length, showStats: true})});
             break;
          case "bubbleSort":
             const bubbleAnim = getBubbleSortAnimations(this.state.mainArray);
-            this.sortAnimation(bubbleAnim);
+            this.sortAnimation(bubbleAnim, ()=>{this.setState({steps: bubbleAnim.length, showStats: true})});
             break;
-      }
-      if (method === "mergeSort") {
       }
    }
 
@@ -107,7 +111,7 @@ export default class SortingVisualizer extends Component {
          <div id="SortingVisualizer">
             <div id="header">
                <div id="headerLeft">
-                  <input type="text" placeholder="50" onChange={this.changeArraySize}/>
+                  <input type="number" placeholder="50" onChange={this.changeArraySize}/>
                   <div id="selectSize">
                      <select name="sortingType" onChange={this.changeSortingType}>
                         <option value="mergeSort">Tri par fusion</option>
@@ -117,10 +121,12 @@ export default class SortingVisualizer extends Component {
                      </select>
                   </div>
                </div>
-               {
-               this.state.showStats && 
-                  <p>Étapes : {this.state.steps} || temps : {this.state.steps * ANIMATION_SPEED} secondes</p>
-               }
+               <div id="headerCenter">
+                  {
+                  this.state.showStats && 
+                     <p>Étapes : {this.state.steps/3}</p>
+                  }
+               </div>
                <div id="headerRight">
                   <button id="newArr" onClick={this.makeNewArray}>Nouvel échantillon</button>
                   <button id="sortButton" onClick={this.startSort}>Trier</button>
