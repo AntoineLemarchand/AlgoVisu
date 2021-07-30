@@ -1,0 +1,33 @@
+.node {
+  outline: 1px solid #a89984;
+  height: 30px;
+  width: 30px;
+  box-shadow: 1px 0 1px black;
+  transition: background-color .1s;
+}
+
+.node-shortest-path {
+  background-color: #fabd2f;
+  outline: 1px solid #1d2021;
+}
+
+.node-visited {
+  background-color: #83a598;
+  outline: 1px solid #1d2021;
+}
+
+.node-start {
+  background-color: #b8bb26;
+  outline: 1px solid #1d2021;
+  cursor: grab;
+}
+
+.node-finish {
+  background-color: #cc241d;
+  outline: 1px solid #1d2021;
+  cursor: grab;
+}
+
+.node-wall {
+  background-color: #a89984;
+}

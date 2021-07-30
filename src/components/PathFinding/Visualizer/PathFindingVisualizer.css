@@ -1,0 +1,66 @@
+#header {
+  background-color: #1d2021;
+  height: 8vh;
+}
+
+#widthSelect, #heightSelect {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#heightSelect label, #widthSelect label {
+  color: #ebdbb2;
+}
+
+#heightSelect input, #widthSelect input {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+#selectAlgo {
+  display: flex;
+  flex-direction: none;
+  align-items: center;
+  width: auto;
+}
+
+#selectAlgo select {
+  appearance: none;
+  padding-left: 10px;
+  color: #1d2021;
+  background-color: #fabd2f;
+  width: 150px
+}
+
+#selectAlgo:after {
+  content: "\25bc";
+  position: relative;
+  right: 15%;
+}
+
+#visButton {
+  background-color: #fe8019;
+}
+
+#resetButton {
+  background-color: #fabd2f;
+  margin-right: 3vw;
+}
+
+#viewer {
+  width: 100vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #282828;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+

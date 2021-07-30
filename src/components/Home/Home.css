@@ -1,0 +1,44 @@
+:root {
+  overflow-y: hidden;
+}
+
+#title {
+  height: 10vh;
+  background-color: #1d2021;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ebdbb2;
+}
+
+#Links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 80vh;
+  width: 100vw;
+  background-color: #282828;
+  font-size: 20px;
+  flex-wrap: wrap;
+}
+
+#Links * {
+  border-radius: 20px;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #1d2021
+}
+
+#SortingButton {
+  background-color: #fe8019;
+}
+
+#PathFindingButton {
+  background-color: #b8bb26;
+}

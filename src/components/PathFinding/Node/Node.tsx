@@ -1,44 +1,39 @@
 import React, {Component} from 'react';
+import './Node.css'
 
-interface props  {
-  col: number;
-  row: number;
-  isFinish: boolean;
-  isStart: boolean;
-  isWall: boolean;
-  onMouseDown: Function;
-  onMouseEnter: Function;
-  onMouseUp: Function;
-  
+interface props {
+  key: number,
+  row: number,
+  col: number,
+  isStart: boolean,
+  isFinish: boolean,
+  isWall: boolean,
+  onMouseDown: Function,
+  onMouseEnter: Function,
+  onMouseUp: Function,
 }
 
 export default class Node extends Component<props> {
   render() {
     const {
-      col,
       row,
+      col,
+      isStart, 
       isFinish,
-      isStart,
       isWall,
       onMouseDown,
       onMouseEnter,
-      onMouseUp
-    } = this.props;
-    const extraClassName = isFinish
-      ? 'node-finish'
-      : isStart
-      ? 'node-start'
-      : isWall
-      ? 'node-wall'
-      : '';
-
+      onMouseUp,
+    } = this.props
+    const className = isFinish ? 'node-finish' : isStart ? 'node-start' : isWall ? 'node-wall' : '';
       return (
         <div 
+          className={`node ${className}`}
           id={`node-${row}-${col}`}
-          className={`node ${extraClassName}`}
           onMouseDown={() => onMouseDown(row, col)}
           onMouseEnter={() => onMouseEnter(row, col)}
-          onMouseUp={() => onMouseUp()}></div>
+          onMouseUp={() => onMouseUp()}
+        ></div>
       )
   }
 }
