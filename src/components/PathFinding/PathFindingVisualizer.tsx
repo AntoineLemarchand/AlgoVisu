@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Node from '../Node/Node';
-import { dijkstra, getNodePath } from '../Algorithms/Dijkstra';
-import Footer from '../../Footer/Footer';
+import Node from './Node';
+import { dijkstra, getNodePath } from './Algorithms/Dijkstra';
+import Footer from '../Footer';
 
 interface NodeType {
   row: number;

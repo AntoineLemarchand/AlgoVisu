@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import './SortingVisualizer.css';
-import Footer from '../../Footer/Footer';
-import {getMergeSortAnimations} from '../Algorithms/MergeSort';
-import {getQuickSortAnimations} from '../Algorithms/Quicksort';
-import {getHeapSortAnimations} from '../Algorithms/HeapSort';
-import {getBubbleSortAnimations} from '../Algorithms/BubbleSort';
+import Footer from '../Footer';
+import {getMergeSortAnimations} from './Algorithms/MergeSort';
+import {getQuickSortAnimations} from './Algorithms/Quicksort';
+import {getHeapSortAnimations} from './Algorithms/HeapSort';
+import {getBubbleSortAnimations} from './Algorithms/BubbleSort';
 
 const ANIMATION_SPEED = 5;
 const PRIMARY_COLOR = '#a6e3a1'
@@ -129,7 +128,7 @@ export default class SortingVisualizer extends Component {
                  <button className='rounded-r-lg bg-success p-2' onClick={this.startSort}>Sort</button>
               </div>
             </div>
-            <div className="bg-background/60 flex items-end justify-center h-full">
+            <div className="bg-background/90 flex items-end justify-center h-full">
             {this.state.mainArray.map((value, index: number) => {
                return(
                   <div 
