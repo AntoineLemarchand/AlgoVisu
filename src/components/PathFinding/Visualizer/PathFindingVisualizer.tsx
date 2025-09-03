@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Node from '../Node/Node';
 import { dijkstra, getNodePath } from '../Algorithms/Dijkstra';
 import Footer from '../../Footer/Footer';
-import './PathFindingVisualizer.css';
 
 interface NodeType {
   row: number;
@@ -25,7 +24,6 @@ export default function PathFindingVisualizer() {
   const [algo, setAlgo] = useState('dijkstra');
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
-  // Initialize grid
   const makeGrid = useCallback(() => {
     const newGrid: NodeType[][] = [];
     for (let row = 0; row < rowSize; row++) {
@@ -69,7 +67,6 @@ export default function PathFindingVisualizer() {
     makeGrid();
   }, [makeGrid]);
 
-  // Toggle wall
   const toggleWall = (row: number, col: number) => {
     setGrid(prev =>
       prev.map(r =>
@@ -83,7 +80,6 @@ export default function PathFindingVisualizer() {
     );
   };
 
-  // Mouse handlers
   const handleMouseDown = (row: number, col: number) => {
     const node = grid[row][col];
     if (node.isStart) setDraggingNode('start');
@@ -116,33 +112,24 @@ export default function PathFindingVisualizer() {
 
   const handleMouseLeave = () => setMouseIsPressed(false);
 
-  // Grid reset
   const resetGrid = () => {
-  setGrid(prev =>
-    prev.map(row =>
-      row.map(node => ({
-        ...node,
-        isVisited: false,
-        distance: Infinity,
-        previousNode: null,
-        isWall: false,
-      }))
+    grid.map(row =>
+      row.map(node => {
+        if (!node.isStart && !node.isFinish) {
+          const el = document.getElementById(`node-${node.row}-${node.col}`);
+          if (el) {
+            el.classList.remove('bg-primary');
+            el.classList.remove('bg-secondary');
+            el.classList.remove('bg-info')
+          }
+        }
+      })
     )
-  );
-  grid.forEach(row =>
-    row.forEach(node => {
-      const el = document.getElementById(`node-${node.row}-${node.col}`);
-      if (!el) return;
-      if (node.isStart) el.className = 'node node-start';
-      else if (node.isFinish) el.className = 'node node-finish';
-      else if (node.isWall) el.className = 'node node-wall';
-      else el.className = 'node';
-    })
-  );
-};
+    makeGrid()
+  };
 
 
-  // Grid size change
+
   const changeGridSize = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
     if (value > 0) {
@@ -155,26 +142,32 @@ export default function PathFindingVisualizer() {
     setAlgo(event.target.value);
   };
 
-  // Dijkstra animation
   const animateDijkstra = (visitedNodes: NodeType[], path: NodeType[]) => {
     visitedNodes.forEach((node, i) => {
       setTimeout(() => {
         if (!node.isStart && !node.isFinish) {
           const el = document.getElementById(`node-${node.row}-${node.col}`);
-          if (el) el.className = 'node node-visited';
+          if (el) {
+            el.classList.remove('bg-primary');
+            el.classList.add('bg-secondary');
+          }
+          
         }
       }, 10 * i);
     });
-
     setTimeout(() => animatePath(path), 10 * visitedNodes.length);
   };
+
 
   const animatePath = (path: NodeType[]) => {
     path.forEach((node, i) => {
       setTimeout(() => {
         if (!node.isStart && !node.isFinish) {
           const el = document.getElementById(`node-${node.row}-${node.col}`);
-          if (el) el.className = 'node node-shortest-path';
+          if (el) {
+            el.classList.remove('bg-secondary');
+            el.classList.add('bg-info')
+          }
         }
       }, 50 * i);
     });
@@ -197,56 +190,70 @@ export default function PathFindingVisualizer() {
   };
 
   return (
-    <div id="pathFindingVisualizer">
-      <div id="header">
-        <div id="headerLeft">
-          <div id="selectAlgo">
-            <div id="widthSelect">
-              <label htmlFor="width">Lignes</label>
+    <div className='h-screen flex flex-col'>
+      <div className="bg-background h-24 p-4 flex justify-between items-center">
+        <div className='flex'>
+          <div className="text-primary flex flex-col">
+            <label htmlFor="width" className='block mb-1 text-sm'>Size</label>
+            <div>
               <input
+                className='bg-secondary w-8 me-2 text-center rounded-md'
+                min={1}
+                max={20}
                 type="number"
                 name="rowSize"
                 value={rowSize}
                 onChange={changeGridSize}
               />
-            </div>
-            <div id="heightSelect">
-              <label htmlFor="height">Colonnes</label>
+              X
               <input
+                className='bg-secondary w-8 ms-2 text-center rounded-md'
+                min={1}
+                max={20}
                 type="number"
                 name="colSize"
                 value={colSize}
                 onChange={changeGridSize}
               />
             </div>
-            <select name="algo" onChange={changeAlgo} value={algo}>
-              <option value="dijkstra">Dijkstra</option>
-            </select>
           </div>
         </div>
-        <div id="headerRight">
-          <button onClick={resetGrid}>Redémarrer</button>
-          <button onClick={visualize}>Visualiser l'algorithme</button>
+        <div>
+          <select name="algo" onChange={changeAlgo} value={algo}
+            className="bg-primary text-background px-2 h-12 rounded-md">
+            <option value="dijkstra">Dijkstra</option>
+            <option value="quick-sort">Quick sort</option>
+            <option value="bubble-sort">Bubble sort</option>
+            <option value="heap sort">Heap sort</option>
+          </select>
+        </div>
+        <div className='rounded-lg overflow-hidden'>
+          <button onClick={resetGrid} className='bg-failure p-2'>restart</button>
+          <button onClick={visualize} className='bg-success p-2'>Visualize</button>
         </div>
       </div>
 
-      <div id="viewer">
+      <div className="w-screen flex flex-col justify-center items-center overflow-hidden bg-background/90 h-full">
         <div onMouseLeave={handleMouseLeave} onDragStart={(e) => e.preventDefault()}>
           {grid.map((row, rowIdx) => (
-            <div className="row" key={rowIdx} draggable={false}>
-              {row.map((node, nodeIdx) => (
-                <Node
-                  key={nodeIdx}
-                  row={node.row}
-                  col={node.col}
-                  isStart={node.isStart}
-                  isFinish={node.isFinish}
-                  isWall={node.isWall}
-                  onMouseDown={() => handleMouseDown(node.row, node.col)}
-                  onMouseEnter={() => handleMouseEnter(node.row, node.col)}
-                  onMouseUp={handleMouseUp}
-                />
-              ))}
+            <div className="flex" key={rowIdx}>
+              {row.map(node => {
+                return (
+                  <Node
+                    key={`${node.row}-${node.col}`}
+                    row={node.row}
+                    col={node.col}
+                    isStart={node.isStart}
+                    isFinish={node.isFinish}
+                    isWall={node.isWall}
+                    isVisited={node.isVisited}
+                    isPath={node.isPath}
+                    onMouseDown={handleMouseDown}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseUp={handleMouseUp}
+                  />
+                )
+              })}
             </div>
           ))}
         </div>
