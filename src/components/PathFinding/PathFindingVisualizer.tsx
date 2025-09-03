@@ -9,6 +9,7 @@ interface NodeType {
   isStart: boolean;
   isFinish: boolean;
   isWall: boolean;
+  isPath?: boolean;
   distance: number;
   isVisited: boolean;
   previousNode: NodeType | null;
@@ -178,7 +179,7 @@ export default function PathFindingVisualizer() {
     const endCell = grid[endNode.row][endNode.col];
     const visitedNodes = dijkstra(grid, startCell, endCell);
     const path = getNodePath(endCell);
-    animateDijkstra(visitedNodes, path);
+    animateDijkstra(visitedNodes as NodeType[], path);
   };
 
   const visualize = () => {

@@ -74,7 +74,7 @@ export default class SortingVisualizer extends Component {
       var bars = document.getElementsByClassName('bar');
       for (let j = 0; j<bars.length; j++) {
          let bar = bars[j] as HTMLElement;
-         bar.style.remove = PRIMARY_COLOR;
+         bar.style.backgroundColor = "#434356"
       }
    }
 
@@ -116,7 +116,7 @@ export default class SortingVisualizer extends Component {
                    <option value="bubbleSort">Bubble sort</option>
                 </select>
                 <p className="text-primary">
-                     <p>Steps : {this.state.steps/3}</p>
+                   Steps : {this.state.steps/3}
                 </p>
               </div>
               <div className="flex flex-col p-2 text-center">

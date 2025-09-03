@@ -1,4 +1,3 @@
-import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import SortingVisualizer from './Sorting/SortingVisualizer';
