@@ -33,6 +33,7 @@ export default class Node extends Component<props> {
           onMouseDown={() => onMouseDown(row, col)}
           onMouseEnter={() => onMouseEnter(row, col)}
           onMouseUp={() => onMouseUp()}
+          draggable={false}
         ></div>
       )
   }

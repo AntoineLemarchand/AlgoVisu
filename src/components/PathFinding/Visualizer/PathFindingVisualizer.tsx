@@ -1,227 +1,259 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Node from '../Node/Node';
 import { dijkstra, getNodePath } from '../Algorithms/Dijkstra';
 import Footer from '../../Footer/Footer';
 import './PathFindingVisualizer.css';
 
-export default class PathFindingVisualizer extends Component {
-  state = {
-    rowSize: 10,
-    colSize: 20,
-    startNode: {row: 2, col:2},
-    endNode: {row:8,col:16},
-    grid: [],
-    preview: undefined,
-    algo: 'dijkstra',
-    mouseIsPressed: false,
-  }
+interface NodeType {
+  row: number;
+  col: number;
+  isStart: boolean;
+  isFinish: boolean;
+  isWall: boolean;
+  distance: number;
+  isVisited: boolean;
+  previousNode: NodeType | null;
+}
 
-  handleMouseDown = (row: number, col: number) => {
-    const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({grid: newGrid, mouseIsPressed: true});
-  }
+export default function PathFindingVisualizer() {
+  const [rowSize, setRowSize] = useState(10);
+  const [colSize, setColSize] = useState(20);
+  const [startNode, setStartNode] = useState({ row: 2, col: 2 });
+  const [endNode, setEndNode] = useState({ row: 8, col: 16 });
+  const [draggingNode, setDraggingNode] = useState<'start' | 'finish' | null>(null);
+  const [grid, setGrid] = useState<NodeType[][]>([]);
+  const [algo, setAlgo] = useState('dijkstra');
+  const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
-  handleMouseEnter = (row: number, col: number) => {
-    if (!this.state.mouseIsPressed) return;
-    const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({grid: newGrid})
-  }
-
-  handleMouseUp = () => {
-    this.setState({mouseIsPressed: false})
-  }
-
-  makeGrid = () => {
-    const grid = [];
-    for (let row = 0;row < this.state.rowSize; row++) {
-      const currentRow = []
-      for (let col = 0;col < this.state.colSize; col++) {
-        const currentNode = {
+  // Initialize grid
+  const makeGrid = useCallback(() => {
+    const newGrid: NodeType[][] = [];
+    for (let row = 0; row < rowSize; row++) {
+      const currentRow: NodeType[] = [];
+      for (let col = 0; col < colSize; col++) {
+        currentRow.push({
           row,
           col,
-          isStart: row === this.state.startNode.row && col === this.state.startNode.col,
-          isFinish: row === this.state.endNode.row && col === this.state.endNode.col,
+          isStart: row === startNode.row && col === startNode.col,
+          isFinish: row === endNode.row && col === endNode.col,
           isWall: false,
           distance: Infinity,
           isVisited: false,
           previousNode: null,
-        }
-        currentRow.push(currentNode);
+        });
       }
-      grid.push(currentRow);
+      newGrid.push(currentRow);
     }
-    this.setState({grid});
-    this.setState({preview: this.displayGrid()})
-    return grid;
-  }
+    setGrid(newGrid);
+  }, [rowSize, colSize, startNode, endNode]);
 
-  resetGrid = () => {
-    for (let row = 0;row < this.state.rowSize; row++) {
-      for (let col = 0; col < this.state.colSize; col++) {
-        let node = document.getElementById(`node-${row}-${col}`)
-        if (node !== null) {
-          if (node.className === 'node node-start node-visited' || node.className === 'node node-start') {
-            node.className = 'node node-start';
-          } else if (node.className === 'node node-finish node-visited' || node.className === 'node node-finish') {
-            node.className = 'node node-finish';
-          } else if (node.className !== 'node node-wall') {
-            node.className = 'node';
+  const makeGridWithFixedNodes = (
+    startRow: number,
+    startCol: number,
+    endRow: number,
+    endCol: number
+  ) => {
+    setGrid(prev =>
+      prev.map(row =>
+        row.map(node => ({
+          ...node,
+          isStart: node.row === startRow && node.col === startCol,
+          isFinish: node.row === endRow && node.col === endCol,
+        }))
+      )
+    );
+  };
+
+
+  useEffect(() => {
+    makeGrid();
+  }, [makeGrid]);
+
+  // Toggle wall
+  const toggleWall = (row: number, col: number) => {
+    setGrid(prev =>
+      prev.map(r =>
+        r.map(node => {
+          if (node.row === row && node.col === col) {
+            return { ...node, isWall: !node.isWall };
           }
-        }
-      }
-    }
-  }
+          return node;
+        })
+      )
+    );
+  };
 
-  getNewGridWithWallToggled = (grid: any[], row: number, col: number) => {
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newNode = {
-      ...node,
-      isWall: !node.isWall,
-    };
-    newGrid[row][col] = newNode;
-    this.setState({grid: this.makeGrid(), preview: this.displayGrid()});
-    return newGrid;
-  }
+  // Mouse handlers
+  const handleMouseDown = (row: number, col: number) => {
+    const node = grid[row][col];
+    if (node.isStart) setDraggingNode('start');
+    else if (node.isFinish) setDraggingNode('finish');
+    else toggleWall(row, col);
 
-  displayGrid = () => {
-    let preview =  
-      this.state.grid.map((row: any[], index: number) => {
-        return( <div className="row" key={index}>
-          {
-            row.map((node: any, index: number) => {
-              const {row, col, isStart, isFinish, isWall} = node;
-              return(
-                <Node
-                  key={index}
-                  row={row}
-                  col={col}
-                  isStart={isStart}
-                  isFinish={isFinish}
-                  isWall={isWall}
-                  onMouseDown={(row: number, col: number) => this.handleMouseDown(row, col)}
-                  onMouseEnter={(row: number, col: number) => this.handleMouseEnter(row, col)}
-                  onMouseUp={this.handleMouseUp}
-                />
-              )
-            })
-          }
-          </div>
-          )
-      })
-      return preview
-    }
+    setMouseIsPressed(true);
+  };
 
-  changeGrid = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    if (Number(event.target.value) > 0) {
-      this.setState({[event.target.name]: event.target.value});
+  const handleMouseEnter = (row: number, col: number) => {
+    if (!mouseIsPressed) return;
+
+    if (draggingNode === 'start') {
+      setStartNode({ row, col });
+      makeGridWithFixedNodes(row, col, endNode.row, endNode.col);
+    } else if (draggingNode === 'finish') {
+      setEndNode({ row, col });
+      makeGridWithFixedNodes(startNode.row, startNode.col, row, col);
     } else {
-      this.setState({[event.target.name]: 20});
+      toggleWall(row, col);
     }
-    setTimeout(() => { 
-      this.setState({startNode: {row: Math.floor(this.state.rowSize/3),col: 0}})
-      this.setState({endNode: {row: Math.floor(this.state.rowSize*2/3),col: this.state.colSize-1}})
-      this.makeGrid();
-    },0);
-  }
+  };
 
-  changeAlgo = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({algo: event.target.value})
-  }
+  const handleMouseUp = () => {
+    setMouseIsPressed(false);
+    setDraggingNode(null);
+  };
 
-  animateDijkstra = (visitedNodes: any, path: any[]) => {
-    this.setState({preview: this.displayGrid()});
-    for (let i = 0; i <= visitedNodes.length; i++) {
-      if (i === visitedNodes.length) {
-        setTimeout(() => {
-          this.animatePath(path);
-        }, 10 * i);
-        return;
-      }
-      setTimeout(() => {
-        const node = visitedNodes[i];
-        const ids = document.getElementById(`node-${node.row}-${node.col}`);
-        if (ids != null && ids.className !== 'node node-start' && ids.className !== 'node node-finish') ids.className = 'node node-visited';
-      }, 10 * i)
+
+
+  const handleMouseLeave = () => setMouseIsPressed(false);
+
+  // Grid reset
+  const resetGrid = () => {
+  setGrid(prev =>
+    prev.map(row =>
+      row.map(node => ({
+        ...node,
+        isVisited: false,
+        distance: Infinity,
+        previousNode: null,
+        isWall: false,
+      }))
+    )
+  );
+  grid.forEach(row =>
+    row.forEach(node => {
+      const el = document.getElementById(`node-${node.row}-${node.col}`);
+      if (!el) return;
+      if (node.isStart) el.className = 'node node-start';
+      else if (node.isFinish) el.className = 'node node-finish';
+      else if (node.isWall) el.className = 'node node-wall';
+      else el.className = 'node';
+    })
+  );
+};
+
+
+  // Grid size change
+  const changeGridSize = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    if (value > 0) {
+      if (event.target.name === 'rowSize') setRowSize(value);
+      else setColSize(value);
     }
-  }
+  };
 
-  animatePath = (path: any[]) => {
-    this.setState({preview: this.displayGrid()});
-    for (let i = 0; i < path.length; i++) {
+  const changeAlgo = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setAlgo(event.target.value);
+  };
+
+  // Dijkstra animation
+  const animateDijkstra = (visitedNodes: NodeType[], path: NodeType[]) => {
+    visitedNodes.forEach((node, i) => {
       setTimeout(() => {
-        const cells = path[i];
-        const cell = document.getElementById(`node-${cells.row}-${cells.col}`);
-            if (cell !== null && cell.className !== 'node node-finish') {
-              if (cell.className !== 'node node-finish' && cell.className !== 'node node-start') {
-                cell.className = 'node node-shortest-path';
-              }
+        if (!node.isStart && !node.isFinish) {
+          const el = document.getElementById(`node-${node.row}-${node.col}`);
+          if (el) el.className = 'node node-visited';
         }
-      },10*i)
-    }
-  }
+      }, 10 * i);
+    });
 
-  visualizeDijkstra = () => {
-    const {grid} = this.state;
-    const startCell = grid[this.state.startNode.row][this.state.startNode.col];
-    const endCell = grid[this.state.endNode.row][this.state.endNode.col];
-    const visitedCells = dijkstra(grid, startCell, endCell);
+    setTimeout(() => animatePath(path), 10 * visitedNodes.length);
+  };
+
+  const animatePath = (path: NodeType[]) => {
+    path.forEach((node, i) => {
+      setTimeout(() => {
+        if (!node.isStart && !node.isFinish) {
+          const el = document.getElementById(`node-${node.row}-${node.col}`);
+          if (el) el.className = 'node node-shortest-path';
+        }
+      }, 50 * i);
+    });
+  };
+
+  const visualizeDijkstra = () => {
+    const startCell = grid[startNode.row][startNode.col];
+    const endCell = grid[endNode.row][endNode.col];
+    const visitedNodes = dijkstra(grid, startCell, endCell);
     const path = getNodePath(endCell);
-    this.animateDijkstra(visitedCells, path)
-  }
+    animateDijkstra(visitedNodes, path);
+  };
 
-  visualize = (algo: string) => {
-    switch(algo){
-      case "dijkstra":
-        this.visualizeDijkstra();
+  const visualize = () => {
+    switch (algo) {
+      case 'dijkstra':
+        visualizeDijkstra();
         break;
     }
-  }
+  };
 
-  componentDidMount() {
-    setTimeout(() => this.setState({grid: this.makeGrid()}),0)
-  }
-
-  render() {
-    return(
-      <div id="pathFindingVIsualizer">
-        <div id="header">
-          <div id="headerLeft">
-            <div id="selectAlgo">
-              <div id="widthSelect">
-                <label htmlFor="width">Lignes</label>
-                <input 
-                  type="number"
-                  name="rowSize" 
-                  placeholder="10" 
-                  onChange={this.changeGrid}/>
-              </div>
-              <div id="heightSelect">
-                <label htmlFor="height">Colonnes</label>
-                <input 
-                  type="number" 
-                  name="colSize" 
-                  placeholder="20" 
-                  onChange={this.changeGrid}/>
-              </div>
-              <select name="algo" onChange={this.changeAlgo}>
-                <option value="dijkstra">Dijkstra</option>
-              </select>
+  return (
+    <div id="pathFindingVisualizer">
+      <div id="header">
+        <div id="headerLeft">
+          <div id="selectAlgo">
+            <div id="widthSelect">
+              <label htmlFor="width">Lignes</label>
+              <input
+                type="number"
+                name="rowSize"
+                value={rowSize}
+                onChange={changeGridSize}
+              />
             </div>
-          </div>
-          <div id="headerRight">
-            <button id="resetButton" onClick={this.resetGrid}>Redémarrer</button>
-            <button id="visButton" onClick={() => this.visualize(this.state.algo)}>Visualiser l'algorithme</button>
+            <div id="heightSelect">
+              <label htmlFor="height">Colonnes</label>
+              <input
+                type="number"
+                name="colSize"
+                value={colSize}
+                onChange={changeGridSize}
+              />
+            </div>
+            <select name="algo" onChange={changeAlgo} value={algo}>
+              <option value="dijkstra">Dijkstra</option>
+            </select>
           </div>
         </div>
-        <div id="viewer">
-          {
-            this.state.preview
-          }
+        <div id="headerRight">
+          <button onClick={resetGrid}>Redémarrer</button>
+          <button onClick={visualize}>Visualiser l'algorithme</button>
         </div>
-        {Footer("pathfinder")}
       </div>
-    )
-  }
+
+      <div id="viewer">
+        <div onMouseLeave={handleMouseLeave} onDragStart={(e) => e.preventDefault()}>
+          {grid.map((row, rowIdx) => (
+            <div className="row" key={rowIdx} draggable={false}>
+              {row.map((node, nodeIdx) => (
+                <Node
+                  key={nodeIdx}
+                  row={node.row}
+                  col={node.col}
+                  isStart={node.isStart}
+                  isFinish={node.isFinish}
+                  isWall={node.isWall}
+                  onMouseDown={() => handleMouseDown(node.row, node.col)}
+                  onMouseEnter={() => handleMouseEnter(node.row, node.col)}
+                  onMouseUp={handleMouseUp}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {Footer('pathfinder')}
+    </div>
+  );
 }
+
