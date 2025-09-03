@@ -117,7 +117,7 @@ export default class SortingVisualizer extends Component {
                    <option value="bubbleSort">Bubble sort</option>
                 </select>
                 <p className="text-primary">
-                     <p>Étapes : {this.state.steps/3}</p>
+                     <p>Steps : {this.state.steps/3}</p>
                 </p>
               </div>
               <div className="flex flex-col p-2 text-center">
