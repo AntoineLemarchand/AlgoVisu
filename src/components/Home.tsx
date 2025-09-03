@@ -10,12 +10,12 @@ export default class Home extends Component {
         <div className="bg-background/90 h-full flex justify-evenly items-center flex-col md:flex-row">
           <Link to="/sorting">
             <div className="py-16 px-8 text-center bg-info text-xl w-86 rounded-xl">
-              Algorithme de tri
+              Sorting algorithms
             </div>
           </Link>
           <Link to="/pathfinding">
             <div className="py-16 px-8 text-center bg-success text-xl w-86 rounded-xl">
-              Algorithme de chemin
+              Pathfinding algorithms
             </div>
           </Link>
         </div>
