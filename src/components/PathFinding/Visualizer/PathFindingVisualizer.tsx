@@ -222,9 +222,6 @@ export default function PathFindingVisualizer() {
           <select name="algo" onChange={changeAlgo} value={algo}
             className="bg-primary text-background px-2 h-12 rounded-md">
             <option value="dijkstra">Dijkstra</option>
-            <option value="quick-sort">Quick sort</option>
-            <option value="bubble-sort">Bubble sort</option>
-            <option value="heap sort">Heap sort</option>
           </select>
         </div>
         <div className='rounded-lg overflow-hidden'>

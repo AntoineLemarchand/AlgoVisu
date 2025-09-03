@@ -7,8 +7,8 @@ import {getHeapSortAnimations} from '../Algorithms/HeapSort';
 import {getBubbleSortAnimations} from '../Algorithms/BubbleSort';
 
 const ANIMATION_SPEED = 5;
-const PRIMARY_COLOR = '#98971a'
-const SECONDARY_COLOR = '#cc241d'
+const PRIMARY_COLOR = '#a6e3a1'
+const SECONDARY_COLOR = '#f38ba38'
 
 export default class SortingVisualizer extends Component {
    state = {
@@ -16,7 +16,6 @@ export default class SortingVisualizer extends Component {
       arraySize: 50,
       sortingType: "mergeSort",
       steps: 0,
-      showStats: false,
    }
 
    changeSortingType = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -47,7 +46,7 @@ export default class SortingVisualizer extends Component {
             const [barOneIndex, barTwoIndex] = animations[i];
             const barOneStyle = arrayBars[barOneIndex] as HTMLElement;
             const barTwoStyle = arrayBars[barTwoIndex] as HTMLElement;
-            const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+            const color = (i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR);
             setTimeout(() => {
                barOneStyle.style.backgroundColor = color;
                barTwoStyle.style.backgroundColor = color;
@@ -66,7 +65,7 @@ export default class SortingVisualizer extends Component {
    }
 
    makeNewArray = () => {
-      this.setState({mainArray: [] as number[], steps: 0, showStats: false})
+      this.setState({mainArray: [] as number[], steps: 0})
       var array:number[] = [];
       for (let i = 0 ;i<this.state.arraySize; i++) {
          let randomInt:number = Math.floor(Math.random() * 75)+5;
@@ -76,7 +75,7 @@ export default class SortingVisualizer extends Component {
       var bars = document.getElementsByClassName('bar');
       for (let j = 0; j<bars.length; j++) {
          let bar = bars[j] as HTMLElement;
-         bar.style.backgroundColor = '#98971a';
+         bar.style.remove = PRIMARY_COLOR;
       }
    }
 
@@ -85,19 +84,19 @@ export default class SortingVisualizer extends Component {
       switch(method) {
          case "mergeSort":
             const mergeAnim = getMergeSortAnimations(this.state.mainArray);
-            this.sortAnimation(mergeAnim, ()=>{this.setState({steps: mergeAnim.length, showStats: true})});
+            this.sortAnimation(mergeAnim, ()=>{this.setState({steps: mergeAnim.length})});
             break;
          case "quickSort":
             const quickAnim = getQuickSortAnimations(this.state.mainArray);
-            this.sortAnimation(quickAnim, ()=>{this.setState({steps: quickAnim.length, showStats: true})});
+            this.sortAnimation(quickAnim, ()=>{this.setState({steps: quickAnim.length})});
             break;
          case "heapSort":
             const heapAnim = getHeapSortAnimations(this.state.mainArray);
-            this.sortAnimation(heapAnim, ()=>{this.setState({steps: heapAnim.length, showStats: true})});
+            this.sortAnimation(heapAnim, ()=>{this.setState({steps: heapAnim.length})});
             break;
          case "bubbleSort":
             const bubbleAnim = getBubbleSortAnimations(this.state.mainArray);
-            this.sortAnimation(bubbleAnim, ()=>{this.setState({steps: bubbleAnim.length, showStats: true})});
+            this.sortAnimation(bubbleAnim, ()=>{this.setState({steps: bubbleAnim.length})});
             break;
       }
    }
@@ -108,40 +107,37 @@ export default class SortingVisualizer extends Component {
 
    render() {
       return(
-         <div id="SortingVisualizer">
-            <div id="header">
-               <div id="headerLeft">
-                  <input type="number" placeholder="50" onChange={this.changeArraySize}/>
-                  <div id="selectSize">
-                     <select name="sortingType" onChange={this.changeSortingType}>
-                        <option value="mergeSort">Tri par fusion</option>
-                        <option value="quickSort">Tri rapide</option>
-                        <option value="heapSort">Tri par saut</option>
-                        <option value="bubbleSort">Tri par bulle</option>
-                     </select>
-                  </div>
-               </div>
-               <div id="headerCenter">
-                  {
-                  this.state.showStats && 
+         <div className="h-screen flex flex-col">
+            <div className="h-24 bg-background flex justify-between items-center">
+              <div className='flex flex-col ps-8'>
+                <select name="sortingType" className="bg-primary text-background px-2 h-12 rounded-md" onChange={this.changeSortingType}>
+                   <option value="mergeSort">Merge sort</option>
+                   <option value="quickSort">Quick sort</option>
+                   <option value="heapSort">Heap sort</option>
+                   <option value="bubbleSort">Bubble sort</option>
+                </select>
+                <p className="text-primary">
                      <p>Étapes : {this.state.steps/3}</p>
-                  }
-               </div>
-               <div id="headerRight">
-                  <button id="newArr" onClick={this.makeNewArray}>Nouvel échantillon</button>
-                  <button id="sortButton" onClick={this.startSort}>Trier</button>
-               </div>
+                </p>
+              </div>
+              <div className="flex flex-col p-2 text-center">
+                 <label htmlFor="number" className='block mb-1 text-sm text-primary'>Number</label>
+                 <input type="number" min={1} max={500} placeholder="50" className="bg-secondary w-16 text-center me-2 rounded-md text-primary" onChange={this.changeArraySize}/>
+              </div>
+              <div className='pe-8'>
+                 <button className='rounded-l-lg bg-failure p-2' onClick={this.makeNewArray}>Reset</button>
+                 <button className='rounded-r-lg bg-success p-2' onClick={this.startSort}>Sort</button>
+              </div>
             </div>
-            <div id="arrayView">
+            <div className="bg-background/60 flex items-end justify-center h-full">
             {this.state.mainArray.map((value, index: number) => {
                return(
                   <div 
-                     className="bar"
+                     className="bar outline-2 outline-background bg-secondary"
                      key={index}
                      style={{
                         height: `${value}vh`,
                         width: `${70/this.state.arraySize}vw`,
-                        backgroundColor: "#98971a"
                      }}>
 
                   </div>
