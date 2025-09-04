@@ -11,7 +11,9 @@ Understanding algorithms can be abstract and challenging when studied only in te
 This project was created to:
 - Help students and developers **see algorithms in action**.  
 - Provide a **hands-on learning tool** to experiment with different approaches.  
-- Compare the **performance and behavior** of algorithms in real time.  
+- Compare the **performance and behavior** of algorithms in real time.
+
+![App Demo](/imgs/quicksort.gif)
 
 ---
 
