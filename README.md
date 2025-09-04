@@ -13,7 +13,7 @@ This project was created to:
 - Provide a **hands-on learning tool** to experiment with different approaches.  
 - Compare the **performance and behavior** of algorithms in real time.
 
-![App Demo](/imgs/quicksort.gif)
+![App Demo](/imgs/output.gif)
 
 ---
 
