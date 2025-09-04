@@ -1,69 +1,51 @@
-# React + TypeScript + Vite
+# 🔍 Sorting & Pathfinding Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+An interactive web application built with **Vite + React** to visualize common **sorting** and **pathfinding algorithms**.  
+The app provides an educational and intuitive way to understand how these algorithms work step-by-step through animations.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Why?
+Understanding algorithms can be abstract and challenging when studied only in textbooks.  
+This project was created to:
+- Help students and developers **see algorithms in action**.  
+- Provide a **hands-on learning tool** to experiment with different approaches.  
+- Compare the **performance and behavior** of algorithms in real time.  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Features
+- **Sorting Algorithms**
+  - Bubble Sort
+  - Merge Sort
+  - Heap Sort
+  - Quick Sort
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Pathfinding Algorithm**
+  - Dijkstra’s Algorithm
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Adjustable visualization speed  
+- Interactive grid for pathfinding  
+- Adjustable array size for sorting  
+- Step-by-step animations to show algorithm flow  
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Quick Start
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Yarn](https://yarnpkg.com/) or npm
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/your-username/sorting-pathfinding-visualizer.git
+cd sorting-pathfinding-visualizer
+
+# Install dependencies
+yarn install   # or npm install
+
+# Run development server
+yarn dev       # or npm run dev
